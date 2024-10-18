@@ -1,34 +1,9 @@
-function [cfg] = LT_WTC(cfg)
+function cfg = LT_WTC(cfg)
     %this function calculates the wavelet transform coherence for every
     %participant pair
-
-    sel_ROI = false;
-
-    while sel_ROI == false
-        fprintf('\nPlease select one option:\n');
-        fprintf('[1] - Calculate coherence by channel\n');
-        fprintf('[2] - Calculate coherence by ROI\n');
-        fprintf('[3] - Quit\n');
-
-        x = input('Option: ');
-
-        switch x
-            case 1
-                sel_ROI = true;
-                ROI = 0;
-            case 2
-                sel_ROI = true;
-                ROI = 1;
-            case 3
-                fprintf('\nProcess aborted.\n');
-            return;
-            otherwise
-                cprintf([1,0.5,0], 'Wrong input!\n');
-        end
-    end
     
 
-    if ROI == 1
+    if cfg.ROI == 1
         cfg.desDir = strcat(cfg.srcDir, 'Coherence_ROIs\');
     else
         cfg.desDir = strcat(cfg.srcDir, 'Coherence_single_channels\');
@@ -72,7 +47,7 @@ function [cfg] = LT_WTC(cfg)
                 fprintf('the time vectors of the two participants don''t correspond!')
                 return;
             end
-            if ROI == 1
+            if cfg.ROI == 1
                 %average all channels by ROI
                 [hbo_1, badChannels_1] = calcROI(hbo_1, badChannels_1);
                 [hbo_2, badChannels_2] = calcROI(hbo_2, badChannels_2);
@@ -117,6 +92,7 @@ function [cfg] = LT_WTC(cfg)
             fprintf('Couldnt save data '); 
         end
     end
+    
 end
        
  

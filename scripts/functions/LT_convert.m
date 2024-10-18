@@ -1,4 +1,4 @@
-function [cfg] = LT_convert(cfg)
+function cfg = LT_convert(cfg)
     %this function converts raw NIRX data into raw .nirs data that can be
     %opened with Homer2
     

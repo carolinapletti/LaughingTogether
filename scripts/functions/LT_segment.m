@@ -1,8 +1,9 @@
-function [cfg] = LT_segment(cfg)
+function cfg = LT_segment(cfg)
     %this segments continuous .nirs data into different .nirs files contain
     %ing only certain segments of the laughing together task based on
     %triggers. The relevant segments (defined in the cfg file) can be
     %laughter or interaction
+    
     
     cfg.desDir = strcat(cfg.srcDir, cfg.currentGroup, '\', cfg.currentSegment, '\');
     
@@ -42,6 +43,8 @@ function [cfg] = LT_segment(cfg)
         if cfg.currentSegment == 'laughter'
             %epochs laughter
             if ~exist(des_dir, 'file')
+                    fprintf('\nSegmenting data.\n Processing segment\n');
+                    cfg.currentSegment
                 try
                     [data_out] = epoch_laughter(data_in); 
                     %save cut data        
@@ -61,6 +64,8 @@ function [cfg] = LT_segment(cfg)
         elseif contains( cfg.currentSegment , 'interaction' )
             %epochs interaction
             if ~exist(des_dir, 'file')
+                    fprintf('\nSegmenting data.\n Processing segment\n');
+                    cfg.currentSegment
                 try
                     [data_out] = epoch_interaction(data_in, cfg.divide);
                     %save cut data

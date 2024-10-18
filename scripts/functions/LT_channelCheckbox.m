@@ -1,4 +1,4 @@
-function [ badChannels ] = LT_channelCheckbox()
+function badChannels = LT_channelCheckbox()
 % LT_CHANNELCHECKBOX is a function, which displays a small GUI for the 
 % selection of bad channels. It returns a vector including the numbers
 % of the bad channels

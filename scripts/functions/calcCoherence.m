@@ -1,4 +1,4 @@
-function [coherences] = calcCoherence(hbo_1, hbo_2, badChannels_1, badChannels_2, t, fs)   
+function coherences = calcCoherence(hbo_1, hbo_2, badChannels_1, badChannels_2, t, fs)   
     % Calc the period of interest
     error = 0;
     max = round(length(t) / fs/4); %trial duration/4

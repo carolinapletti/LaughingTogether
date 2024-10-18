@@ -1,4 +1,4 @@
-function [data_out] = epoch_interaction(data_in, divide) 
+function data_out = epoch_interaction(data_in, divide) 
 
     fprintf('time stamp interaction begins');
     evtInteraction  = find(data_in.s(:, 5) > 0)

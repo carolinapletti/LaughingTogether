@@ -1,4 +1,4 @@
-function [data_out] = epoch_game(data_in) 
+function data_out = epoch_game(data_in) 
 
     fprintf('time stamp game begins');
     evtGame  = find(data_in.s(:, 7) > 0)

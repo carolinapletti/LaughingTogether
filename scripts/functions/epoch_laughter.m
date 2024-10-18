@@ -1,4 +1,4 @@
-function [data_out] = epoch_laughter(data_in) 
+function data_out = epoch_laughter(data_in) 
 
     fprintf('time stamp laughter video beginnings');
     evtLaughter  = find(data_in.s(:, 3) > 0)

@@ -1,4 +1,4 @@
-function [cfg] = LT_preprocess(cfg)
+function cfg = LT_preprocess(cfg)
     %this function calls another function containing the following preprocessing steps:
     %1: convert the wavelength data to optical density
     %2: identifies motion artifacts and performs spline interpolation
