@@ -8,7 +8,7 @@ function cfg = LT_convert(cfg)
     %this loops through 2 because there are two subjects per pair
     for i = 1:2
         %set filenames
-        SubSrcDir = strcat(cfg.srcDir, cfg.currentPair, '\Subject', int2str(i), '\');
+        SubSrcDir = strcat(cfg.rawGrDir, cfg.currentPair, '\Subject', int2str(i), '\');
         SubDesFile = strcat(cfg.desDir, cfg.currentGroup, '\', cfg.currentPair, '_sub', int2str(i),'.nirs');
         
         Sub_wl1File = strcat(SubSrcDir, cfg.currentPair, '.nosatflags_wl1');

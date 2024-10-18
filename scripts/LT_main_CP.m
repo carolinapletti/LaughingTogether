@@ -90,11 +90,37 @@ while sel == false
     end
 end
 
+sel_ROI = false;
+
+while sel_ROI == false
+    fprintf('\nPlease select one option:\n');
+    fprintf('[1] - Calculate coherence by channel\n');
+    fprintf('[2] - Calculate coherence by ROI\n');
+    fprintf('[3] - Quit\n');
+
+    x = input('Option: ');
+
+    switch x
+        case 1
+            sel_ROI = true;
+            cfg.ROI = 0;
+        case 2
+            sel_ROI = true;
+            cfg.ROI = 1;
+        case 3
+            fprintf('\nProcess aborted.\n');
+        return;
+        otherwise
+            cprintf([1,0.5,0], 'Wrong input!\n');
+    end
+end
+
 
 %set the loop that run the functions through all data
 for g = cfg.groups
     cfg.currentGroup = g{:};
-    cfg.srcDir = strcat(cfg.rawDir,cfg.currentGroup,'\');
+    cfg.rawGrDir = strcat(cfg.rawDir,cfg.currentGroup,'\');
+    cfg.srcDir = strcat(cfg.desDir, cfg.currentGroup, '\';
 
     %identify all file in the group subdirectory
     sourceList    = dir([cfg.srcDir, '*_*']);
@@ -126,7 +152,21 @@ for g = cfg.groups
             %wavelet transform coherence
             cfg_part = LT_WTC(cfg_part);
             
-        end    
+            cfg_part.srcDir = cfg.srcDir;
+        end 
+        
+        %save participant's cfg file, which contains a log of all the steps
+        %that were ran
+        try
+            out_path = strcat(cfg.srcDir, cfg.currentPair, '.mat');
+            fprintf('The cfg file will be saved in '); 
+            fprintf('%s ...\n', out_path);
+            save(out_path, 'cfg_part');
+            fprintf('Data stored!\n\n');
+        catch
+            fprintf('Couldnt save data '); 
+        end
+        
     end
 end
 
