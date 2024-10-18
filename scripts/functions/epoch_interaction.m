@@ -29,8 +29,7 @@ function [data_out] = epoch_interaction(data_in, divide)
                 %1):
                 %eliminate first minute and last minutes. Segment
                 %following samples: 5 minutes after the first, 5 minutes
-                %before the last. For the analyses, we will further cut out the
-                %first and last minute of each of those two segments
+                %before the last.
 
                 IntFirst = evtInteraction + 468; %first sampling point of the first part to analyze
                 IntFirstEnd = IntFirst + 2340; %last sampling point of the first part to analyze

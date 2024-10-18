@@ -1,22 +1,11 @@
 %%%%%%%%%%%%%%%%%% LT Project - Main script %%%%%%%%%%%%%%%%%%%%%%%
 % this script takes raw fNIRS data in the NIRX specific format, converts them so they can be preprocessed using Homer2 functions, extracts
 % segments of interest based on markers in the data, cleans and
-% preprocesses the data, calculates synchrony between pairs of participants
-% using wavelet transform coherence, and calculates synchrony between
-% surrogate pairs obtained through random permutation
+% preprocesses the data, and calculates synchrony between pairs of participants
+% using wavelet transform coherence
 
-%for this to work, Homer2 and the wavelet coherence toolbox should be added to the
-%Matlab path
-
-% 1 - convert raw data to homer2 nirs format
-% 2 - segment data into laughter and interaction intervals
-% 3 - preprocess (movement artifact cleaning, filtering, bad channel
-%   removal, conversion of data into changes of concentrations of HbO and HbR)
-% 4 - calculate wavelet transform coherence for pairs of participants
-% 5 - create surrogate pairs and calculate wavelet transform coherence. Use
-%   permutation to create 1000 random pairs per participant and then average
-%   all the results for each participant
-% 6 - export results
+%for this to work, Homer2 should be added to the
+%Matlab path. See and modify lines below as necessary.
 
 clear all
 
@@ -28,55 +17,46 @@ cfg.overwrite = 0; %set to 1 if you want to overwrite all data (converted data w
 cfg.groups = {'IC','IL','NIC','NIL'}; %names of the groups to be analyzed. Should correspond to subfolder names inside the raw data folder below
 cfg.segments = {'laughter', 'interaction'}; %segments of the experiment to be analyzed. Options: laughter, interaction
 
-%set all paths. Change paths based on necessity
-uni = 1 %this is specific for Carolina's workspaces at home and at the Uni
+% --------------------------------------------------------------------
+
+%set all paths. Change paths in the following part of the script based on necessity
+
+uni = 0;
 
 if uni == 1
-    % raw data folder
-    cfg.rawDir = 'X:\hoehl\projects\LT\LT adults\NIRX\Data\'
-
-    % destination folder
-    cfg.desDir = 'X:\hoehl\projects\LT\LT adults\Carolina analyses - DONT MODIFY ANYTHING HERE\fNIRS\data_prep\Data\'
-
-    % -------------------------------------------------------------------------
-    % Load SD file
-    % -------------------------------------------------------------------------
-    cfg.SDFile = 'X:\hoehl\projects\LT\LT adults\NIRX\LT.SD';
     
-    %add path with functions
-    addpath('X:\hoehl\projects\LT\LT adults\Carolina analyses - DONT MODIFY ANYTHING HERE\fNIRS\data_prep\new_scripts\functions');
+    %project folder is here:
+    project_folder = 'X:\hoehl\projects\LT\LT_adults\';
     
-    %add Homer2 to the path using its own function
-    cd ('Z:\Documents\homer2')
-    setpaths
-    cd('X:\hoehl\projects\LT\LT adults\Carolina analyses - DONT MODIFY ANYTHING HERE\fNIRS\data_prep\new_scripts')
+    %data and scripts are here:
+    data_prep_folder = [project_folder 'Carolina_analyses\fNIRS\data_prep\'];
     
-    %add the wavelet coherence toolbox to the path
-    addpath('Z:\Documents\wavelet-coherence-master')
-
+    %toolboxes are here:
+    toolboxes_folder = 'Z:\Documents\';
+    
 else
-    % raw data folder
-    cfg.rawDir = '\\share.univie.ac.at\A474\hoehl\projects\LT\LT adults\NIRX\Data\'
+    %project folder is here:
+    project_folder = '\\share.univie.ac.at\A474\hoehl\projects\LT\LT_adults\';
 
-    % destination folder
-    cfg.desDir = '\\share.univie.ac.at\A474\hoehl\projects\LT\LT adults\Carolina analyses - DONT MODIFY ANYTHING HERE\fNIRS\data_prep\Data\';
-
-    % -------------------------------------------------------------------------
-    % Load SD file
-    % -------------------------------------------------------------------------
-    cfg.SDFile = '\\share.univie.ac.at\A474\hoehl\projects\LT\LT adults\NIRX\LT.SD';
+    %data and scripts are here:
+    data_prep_folder = [project_folder 'Carolina_analyses\fNIRS\data_prep\'];
     
-    %add path with functions
-    addpath('\\share.univie.ac.at\A474\hoehl\projects\LT\LT adults\Carolina analyses - DONT MODIFY ANYTHING HERE\fNIRS\data_prep\new_scripts\functions');
-    
-    %add Homer2 to the path using its own function
-    cd ('Z:\Documents\homer2')
-    setpaths
-    cd('\\share.univie.ac.at\A474\hoehl\projects\LT\LT adults\Carolina analyses - DONT MODIFY ANYTHING HERE\fNIRS\data_prep\new_scripts')
-    
-    %add the wavelet coherence toolbox to the path
-    addpath('Z:\Documents\wavelet-coherence-master')
+    %toolboxes are here:
+    toolboxes_folder = 'Z:\Documents\';
 end
+
+cfg.rawDir = [project_folder 'NIRX\Data\']; % raw data folder
+cfg.desDir = [data_prep_folder 'data\']; % destination folder
+cfg.SDFile = [project_folder 'NIRX\LT.SD']; % SD file
+addpath([data_prep_folder 'scripts\functions']); %add path with functions
+
+%add Homer2 to the path using its own function
+cd ([toolboxes_folder 'homer2'])
+setpaths
+cd([data_prep_folder 'scripts\'])
+
+
+%---------------------------------------------------------
 
 %decide what you want the analysis to do
 sel = false;
@@ -123,7 +103,6 @@ for g = cfg.groups
     numOfSources  = length(sourceList);
     
     for i = 1:numOfSources
-        i
         %retrieve unmodified cfg info
         cfg_part = cfg;
         cfg_part.currentPair = sourceList{i};
@@ -134,7 +113,7 @@ for g = cfg.groups
         cfg_part = LT_convert(cfg_part);
 
         
-        %now loop through for every relevant segment of the task (laughter, inter3action)
+        %now loop through for every relevant segment of the task (laughter, interaction, interaction no cut)
         for s = cfg_part.segments
             cfg_part.currentSegment = s{:};
             
