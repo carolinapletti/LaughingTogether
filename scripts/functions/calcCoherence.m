@@ -5,9 +5,22 @@ function coherences = calcCoherence(hbo_1, hbo_2, badChannels_1, badChannels_2, 
     ts = 1/fs;
     poi=[8 max]; %limits period of interest from greater than 4 times the filter to smaller than trial duration/4
     poi_index = zeros(2,1); %in which columns does the perios of interest starts/ends?    
-    sigPart1 = hbo_1(:,1);
-    sigPart2 = hbo_2(:,1);
+    %find the first two channels that are not bad for each participant
     
+    for i = 1:4
+        if ~ismember(i, badChannels_1) && ~ismember(i, badChannels_2)
+            firstGoodChannel = i;
+            break;
+        end
+    end
+
+    if exist('firstGoodChannel', 'var')
+        sigPart1 = hbo_1(:,firstGoodChannel);
+        sigPart2 = hbo_2(:,firstGoodChannel);
+    else
+        fprintf('No good channels found.\n');
+        return
+    end
 
     try    
         [wcoh,wcs,period] = wcoherence(sigPart1,sigPart2,seconds(ts)); %already calculates wtc and extracts period (that is, all "frequences" that are calculated)
@@ -36,13 +49,13 @@ function coherences = calcCoherence(hbo_1, hbo_2, badChannels_1, badChannels_2, 
         coherences{numOfChan}  = []; 
         %fill each subcell with NaNs. The size is: one row per period of
         %interest, one column per time point
-        coherences(:,:) = {NaN(poi_index(2)-poi_index(1)+1, length(hbo_1)+3)};  %+ 3 columns because the first one is for the period, the second for channel number sub 1, the third for channel number sub 2
+        %coherences(:,:) = {NaN(poi_index(2)-poi_index(1)+1, length(hbo_1)+3)};  %+ 3 columns because the first one is for the period, the second for channel number sub 1, the third for channel number sub 2
         
         %this variable contains the wavelet transform coherence values
         %calculated for each combination of channel and the content changes
         %for every iteration of the loop 
         Rsq{numOfChan} = [];
-        Rsq(:) = {NaN(length(period), length(t))};
+        %Rsq(:) = {NaN(length(period), length(t))};
 
         % -------------------------------------------------------------------------
         % Calculate Coherence increase between conditions for every channel of the 
@@ -78,6 +91,8 @@ function coherences = calcCoherence(hbo_1, hbo_2, badChannels_1, badChannels_2, 
                 sigPart2 = hbo_2(:,Ch_Sub2);
                 try
                     [Rsq{i}, wcs, period2, coi] =wcoherence(sigPart1,sigPart2,seconds(ts));                 % r square - measure for coherence
+                    poi_index(1) = find(period > seconds(poi(1)), 1, 'first'); %finds the first column in period which is greater than the maximum period of interest
+                    poi_index(2) = find(period < seconds(poi(2)), 1, 'last'); %finds the last column in period which is lower than the minimum period of interest
                 catch exception
                     msgText = getReport(exception);
                     fprintf(msgText);

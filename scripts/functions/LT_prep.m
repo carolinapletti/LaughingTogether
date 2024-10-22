@@ -1,7 +1,8 @@
 function [hbo, hbr, badChannels, SCIList, fs]= LT_prep(t, d, SD)   
     
-    %calculate sampling rate
-    fs = 1/(t(2)-t(1));
+    %calculate sampling rate and sampling period
+    ts = t(2)-t(1);
+    fs = 1/ts;
     
     % convert the wavelength data to optical density  
     dod = hmrIntensity2OD(d);                           
@@ -122,20 +123,21 @@ function [hbo, hbr, badChannels, SCIList, fs]= LT_prep(t, d, SD)
     for i = 1:1:size(hbo, 2)
         subplot(4,4,i);
         if ~isnan(hbo(:,i))
-            sig = [t, hbo(:,i)];
-            sigma2=var(sig(:,2));                                                     % estimate signal variance
-
-            [wave,period,~,coi,~] = wt(sig);                                          % compute wavelet power spectrum
+            sig = hbo(:,i);
+            sigma2=var(sig);                                                     % estimate signal variance
+            
+            [wave,period,coi] = cwt(sig,seconds(ts));
+            %[wave,period,~,coi,~] = wt(sig);                                          % compute wavelet power spectrum
             power = (abs(wave)).^2 ;
 
             for j=1:1:length(coi)
                 wave(period >= coi(j), j) = NaN;                                        % set values below cone of interest to NAN
             end
 
-            h = imagesc(t , log2(period), log2(abs(power/sigma2)));
+            h = imagesc(t , log2(seconds(period)), log2(abs(power/sigma2)));
             colorbar;
-            Yticks = 2.^(fix(log2(min(period))):fix(log2(max(period))));
-            set(gca,'YLim',log2([min(period),max(period)]), ...
+            Yticks = 2.^(fix(log2(min(seconds(period)))):fix(log2(max(seconds(period)))));
+            set(gca,'YLim',log2([min(seconds(period)),max(seconds(period))]), ...
                 'YDir','reverse', 'layer','top', ...
                 'YTick',log2(Yticks(:)), ...
                 'YTickLabel',num2str(Yticks'), ...
