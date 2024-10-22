@@ -2,9 +2,6 @@ function cfg = LT_convert(cfg)
     %this function converts raw NIRX data into raw .nirs data that can be
     %opened with Homer2
     
-    %load SD file
-    load(cfg.SDFile, '-mat', 'SD');
-    
     %this loops through 2 because there are two subjects per pair
     for i = 1:2
         %set filenames
@@ -20,6 +17,8 @@ function cfg = LT_convert(cfg)
         % -------------------------------------------------------------------------
 
         if ~exist(SubDesFile, 'file')
+            %load SD file
+            load(cfg.SDFile, '-mat', 'SD');
             try
                 convertData(SubDesFile, Sub_wl1File, Sub_wl2File, Sub_hdrFile, SD);
             catch

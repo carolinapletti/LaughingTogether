@@ -1,4 +1,4 @@
-function data_out = epoch_interaction(data_in, divide) 
+function data_out = epoch_interaction(data_in, segment) 
 
     fprintf('time stamp interaction begins');
     evtInteraction  = find(data_in.s(:, 5) > 0)
@@ -24,7 +24,7 @@ function data_out = epoch_interaction(data_in, divide)
     if weirdtrials == 0            
         if evtInteractionEnd - evtInteraction > 4600 && evtInteractionEnd - evtInteraction < 7020
             
-            if divide == 1
+            if string(segment) == 'interaction'
                 %if you want to divide interaction into two segments (divide =
                 %1):
                 %eliminate first minute and last minutes. Segment
@@ -37,7 +37,7 @@ function data_out = epoch_interaction(data_in, divide)
                 IntSecond = IntSecondEnd - 2340; % first sampling point of the second part to analyze
                 Starts = [IntFirst, IntSecond];
                 Ends = [IntFirstEnd, IntSecondEnd];
-            elseif divide == 0
+            elseif string(segment) == 'interaction_long'
                 %if you want to just have an interaction block (divide =
                 %0):
                 %eliminate first minute. Segment 8 minutes after the first
@@ -45,7 +45,7 @@ function data_out = epoch_interaction(data_in, divide)
                 Starts = evtInteraction + 468; %first sampling point of the part to analyze
                 Ends = Starts + 3744; %last sampling point of the part to analyze
             end
-            for n = 1:1+divide
+            for n = 1:length(Starts)
                 data_out.d{n} = data_in.d(Starts(n):Ends(n),:);
                 data_out.s{n} = data_in.s(Starts(n):Ends(n),:);
                 data_out.t{n} = data_in.t(Starts(n):Ends(n),:);

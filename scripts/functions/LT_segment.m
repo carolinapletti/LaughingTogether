@@ -40,13 +40,20 @@ function cfg = LT_segment(cfg)
 
         des_dir = strcat(cfg.desDir, fileName, '.nirs');
 
-        if cfg.currentSegment == 'laughter'
+        if string(cfg.currentSegment) == 'laughter'
             %epochs laughter
             if ~exist(des_dir, 'file')
+                    try
+                        data_in = load(file_path, '-mat');
+                    catch
+                        problem = {'file to segment can''t be opened'};
+                        cfg.problems = [cfg.problems, problem]; 
+                        continue
+                    end
                     fprintf('\nSegmenting data.\n Processing segment\n');
                     cfg.currentSegment
                 try
-                    [data_out] = epoch_laughter(data_in); 
+                    data_out = epoch_laughter(data_in); 
                     %save cut data        
                     fprintf('The laughter video data will be saved in'); 
                     fprintf('%s ...\n', des_dir);
@@ -61,13 +68,20 @@ function cfg = LT_segment(cfg)
                 end
             end
 
-        elseif contains( cfg.currentSegment , 'interaction' )
+        elseif contains( string(cfg.currentSegment) , 'interaction' )
             %epochs interaction
             if ~exist(des_dir, 'file')
+                    try
+                        data_in = load(file_path, '-mat');
+                    catch
+                        problem = {'file to segment can''t be opened'};
+                        cfg.problems = [cfg.problems, problem]; 
+                        continue
+                    end
                     fprintf('\nSegmenting data.\n Processing segment\n');
                     cfg.currentSegment
                 try
-                    [data_out] = epoch_interaction(data_in, cfg.divide);
+                    data_out = epoch_interaction(data_in, cfg.currentSegment);
                     %save cut data
                     fprintf('The interaction data will be saved in'); 
                     fprintf('%s ...\n', des_dir);

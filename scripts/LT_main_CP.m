@@ -21,7 +21,7 @@ cfg.segments = {'laughter', 'interaction'}; %segments of the experiment to be an
 
 %set all paths. Change paths in the following part of the script based on necessity
 
-uni = 0;
+uni = 1;
 
 if uni == 1
     
@@ -51,9 +51,9 @@ cfg.SDFile = [project_folder 'NIRX\LT.SD']; % SD file
 addpath([data_prep_folder 'scripts\functions']); %add path with functions
 
 %add Homer2 to the path using its own function
-cd ([toolboxes_folder 'homer2'])
-setpaths
-cd([data_prep_folder 'scripts\'])
+% cd ([toolboxes_folder 'homer2'])
+% setpaths
+% cd([data_prep_folder 'scripts\'])
 
 
 %---------------------------------------------------------
@@ -73,14 +73,11 @@ while sel == false
     switch x
         case 1
             sel = true;
-            cfg.divide = 1;
         case 2
             sel = true;
-            cfg.divide = 0;
             cfg.segments = {'laughter', 'interaction_long'};
         case 3
             sel = true;
-            cfg.divide = 2;
             cfg.segments = {'laughter', 'interaction', 'interaction_long'};
         case 4
             fprintf('\nProcess aborted.\n');
