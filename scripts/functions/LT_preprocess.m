@@ -32,7 +32,9 @@ function cfg = LT_preprocess(cfg)
         out_path = strcat(cfg.desDir, fileName, '.mat');
         
         if ~exist(out_path, 'file')
-            fprintf('Load data of subject...\n');
+            fprintf('Load data of subject ')
+            fprintf(fileName)
+            fprintf('\n');
             try
                 load(file_path, '-mat');
             catch
@@ -50,7 +52,9 @@ function cfg = LT_preprocess(cfg)
                     catch
                         error = 1;
                         fprintf('<strong>preprocessing did not work and was not saved!</strong>\n');
-                        fprintf(strcat('check preprocessing of participant ', fileName));
+                        fprintf('check preprocessing of participant ')
+                        fprintf(fileName);
+                        fprintf('\n')
                         problem = {'error in preprocessing'};
                         cfg.problems = [cfg.problems, problem]; 
                     end
@@ -63,14 +67,18 @@ function cfg = LT_preprocess(cfg)
                 catch
                     error = 1;
                     fprintf('<strong>preprocessing did not work and was not saved!</strong>\n');
-                    fprintf(strcat('check preprocessing of participant ', fileName));
+                    fprintf('check preprocessing of participant ')
+                    fprintf(fileName);
+                    fprintf('\n')
                     problem = {'error in preprocessing'};
                     cfg.problems = [cfg.problems, problem];
                 end
             end
             
             if ~error
-                fprintf('The preprocessed data of dyad will be saved in'); 
+                fprintf('The preprocessed data of dyad ')
+                fprintf(fileName)
+                fprintf('will be saved in\n'); 
                 fprintf('%s ...\n', out_path);
                 save(out_path, 'hbo','hbr','s','t', 'fs', 'badChannels');
                 outTable = strcat(out_path, '_SCI.mat');

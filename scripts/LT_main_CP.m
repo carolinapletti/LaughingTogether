@@ -23,7 +23,7 @@ cfg.segments = {'laughter', 'interaction'}; %segments of the experiment to be an
 
 %set all paths. Change paths in the following part of the script based on necessity
 
-uni = 1;
+uni = 0;
 
 if uni == 1
     
@@ -157,8 +157,8 @@ for g = cfg.groups
         %save participant's cfg file, which contains a log of all the steps
         %that were ran
         try
-            out_path = strcat(cfg.srcDir, cfg.currentPair, '.mat');
-            fprintf('The cfg file will be saved in ');
+            out_path = strcat(cfg.srcDir, cfg_part.currentPair, '.mat');
+            fprintf(strcat('The cfg file of pair ', string(cfg_part.currentPair),' will be saved in/n'));
             fprintf('%s ...\n', out_path);
             save(out_path, 'cfg_part');
             fprintf('Data stored!\n\n');

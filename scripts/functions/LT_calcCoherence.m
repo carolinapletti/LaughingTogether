@@ -70,13 +70,13 @@ function coherences = LT_calcCoherence(hbo_1, hbo_2, badChannels_1, badChannels_
         coherences{numOfChan}  = []; 
         %fill each subcell with NaNs. The size is: one row per period of
         %interest, one column per time point
-        %coherences(:,:) = {NaN(poi_index(2)-poi_index(1)+1, length(hbo_1)+3)};  %+ 3 columns because the first one is for the period, the second for channel number sub 1, the third for channel number sub 2
+        coherences(:,:) = {NaN(poi_index(2)-poi_index(1)+1, length(hbo_1)+3)};  %+ 3 columns because the first one is for the period, the second for channel number sub 1, the third for channel number sub 2
         
         %this variable contains the wavelet transform coherence values
         %calculated for each combination of channel and the content changes
         %for every iteration of the loop 
         Rsq{numOfChan} = [];
-        %Rsq(:) = {NaN(length(period), length(t))};
+        Rsq(:) = {NaN(length(period), length(t))};
 
         % -------------------------------------------------------------------------
         % Calculate Coherence increase between conditions for every channel of the 

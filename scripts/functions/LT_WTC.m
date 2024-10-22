@@ -14,6 +14,7 @@ function cfg = LT_WTC(cfg)
     %Output: updated cfg containing all necessary info on where to find wavelet coherence transform data
     
     %author: Carolina Pletti (carolina.pletti@gmail.com). Based on a script by Trinh Nguyen
+
     
     if cfg.ROI == 1
         cfg.desDir = strcat(cfg.srcDir, 'Coherence_ROIs\');
@@ -73,6 +74,7 @@ function cfg = LT_WTC(cfg)
                 fprintf('couldnt calculate coherence for this part!\n');
                 msgText = getReport(exception);
                 fprintf(msgText);
+                return;
             end
             
             % calculate the averages
@@ -95,7 +97,9 @@ function cfg = LT_WTC(cfg)
         
         %save data
         try
-            fprintf('The wtc data of dyad will be saved in '); 
+            fprintf('The wtc data of dyad ')
+            fprintf(cfg.currentPair)
+            fprintf(' will be saved in\n'); 
             fprintf('%s ...\n', out_path);
             save(out_path, 'coherences');
             fprintf('Data stored!\n\n');
