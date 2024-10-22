@@ -1,7 +1,13 @@
 function cfg = LT_convert(cfg)
-    %this function converts raw NIRX data into raw .nirs data that can be
-    %opened with Homer2
+	%this function performs the necessary preparatory steps to convert NIRX data into .nirs data using the function "convertData".
+	
+    %cfg: structure containing all necessary info on where to find the data and where to save them, including raw data folder, output folder
+	%and participant number
     
+    %Output: updated cfg containing all necessary info on where to find converted data
+    
+    %author: Carolina Pletti (carolina.pletti@gmail.com).
+	
     %this loops through 2 because there are two subjects per pair
     for i = 1:2
         %set filenames
@@ -32,10 +38,8 @@ function cfg = LT_convert(cfg)
                     problem = 'error in conversion';
                     cfg.problems = [cfg.problems, problem];
                 end
-            end    
+            end
         end
     end
     cfg.Steps = 'conversion';
-end  
-
-
+end

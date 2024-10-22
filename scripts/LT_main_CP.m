@@ -7,6 +7,8 @@
 %for this to work, Homer2 should be added to the
 %Matlab path. See and modify lines below as necessary.
 
+%author: Carolina Pletti (carolina.pletti@gmail.com)
+
 clear all
 
 % create empty structure that will contain all necessary parameters for
@@ -51,9 +53,9 @@ cfg.SDFile = [project_folder 'NIRX\LT.SD']; % SD file
 addpath([data_prep_folder 'scripts\functions']); %add path with functions
 
 %add Homer2 to the path using its own function
-% cd ([toolboxes_folder 'homer2'])
-% setpaths
-% cd([data_prep_folder 'scripts\'])
+cd ([toolboxes_folder 'homer2'])
+setpaths
+cd([data_prep_folder 'scripts\'])
 
 
 %---------------------------------------------------------
@@ -156,21 +158,13 @@ for g = cfg.groups
         %that were ran
         try
             out_path = strcat(cfg.srcDir, cfg.currentPair, '.mat');
-            fprintf('The cfg file will be saved in '); 
+            fprintf('The cfg file will be saved in ');
             fprintf('%s ...\n', out_path);
             save(out_path, 'cfg_part');
             fprintf('Data stored!\n\n');
         catch
-            fprintf('Couldnt save data '); 
+            fprintf('Couldnt save data ');
         end
         
     end
 end
-
-
-
-
-
-
-
-

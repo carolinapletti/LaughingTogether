@@ -1,5 +1,15 @@
-function data_out = epoch_laughter(data_in) 
+function data_out = LT_epoch_laughter(data_in)
 
+    %this function cuts the fNIRS time series and saves the part of the time series corresponding to when the participants were
+	%watching the videos in the experiment Laughing Together.
+    
+    %data_in: fNIRS data containing time series, time vector and triggers
+    
+    %Output: structure with the same format as data_in, but containing only data corresponding to the time period of interest
+    
+    %author: Carolina Pletti (carolina.pletti@gmail.com).
+	
+	%laughter video start trigger: 3; laughter video end trigger: 4. There are two laughter videos.
     fprintf('time stamp laughter video beginnings');
     evtLaughter  = find(data_in.s(:, 3) > 0)
     fprintf('time stamp laughter video ends');
@@ -13,7 +23,7 @@ function data_out = epoch_laughter(data_in)
         weirdtrials=0;
     end
 
-    %cut out laughter data 
+    %cut out laughter data
 
     if weirdtrials == 0
         tn = 0; %trial number counter

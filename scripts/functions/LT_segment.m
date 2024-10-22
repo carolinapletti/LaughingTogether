@@ -1,9 +1,14 @@
 function cfg = LT_segment(cfg)
-    %this segments continuous .nirs data into different .nirs files contain
-    %ing only certain segments of the laughing together task based on
+    %this function calls subfunctions to segment continuous .nirs data into different .nirs files containing
+	%only certain segments of the laughing together task based on
     %triggers. The relevant segments (defined in the cfg file) can be
-    %laughter or interaction
+    %laughter, interaction or interaction_long
+	
+	%cfg: structure containing all necessary info on where to find the data and where to save them
     
+    %Output: updated cfg containing all necessary info on where to find segmented data
+    
+    %author: Carolina Pletti (carolina.pletti@gmail.com).
     
     cfg.desDir = strcat(cfg.srcDir, cfg.currentSegment, '\');
     
@@ -40,15 +45,15 @@ function cfg = LT_segment(cfg)
                         data_in = load(file_path, '-mat');
                     catch
                         problem = {'file to segment can''t be opened'};
-                        cfg.problems = [cfg.problems, problem]; 
+                        cfg.problems = [cfg.problems, problem];
                         continue
                     end
                     fprintf('\nSegmenting data.\n Processing segment\n');
                     cfg.currentSegment
                 try
-                    data_out = epoch_laughter(data_in); 
-                    %save cut data        
-                    fprintf('The laughter video data will be saved in'); 
+                    data_out = LT_epoch_laughter(data_in);
+                    %save cut data
+                    fprintf('The laughter video data will be saved in');
                     fprintf('%s ...\n', des_dir);
                     save(des_dir, 'data_out');
                     fprintf('Data stored!\n\n');
@@ -57,10 +62,9 @@ function cfg = LT_segment(cfg)
                     fprintf('<strong>laughter epoching did not work and was not saved</strong>\n');
                     fprintf(strcat('check laughter trials of participant ', fileName));
                     problem = {'error in laughter epoching'};
-                    cfg.problems = [cfg.problems, problem]; 
+                    cfg.problems = [cfg.problems, problem];
                 end
             end
-
         elseif contains( string(cfg.currentSegment) , 'interaction' )
             %epochs interaction
             if ~exist(des_dir, 'file')
@@ -74,16 +78,16 @@ function cfg = LT_segment(cfg)
                     fprintf('\nSegmenting data.\n Processing segment\n');
                     cfg.currentSegment
                 try
-                    data_out = epoch_interaction(data_in, cfg.currentSegment);
+                    data_out = LT_epoch_interaction(data_in, cfg.currentSegment);
                     %save cut data
-                    fprintf('The interaction data will be saved in'); 
+                    fprintf('The interaction data will be saved in');
                     fprintf('%s ...\n', des_dir);
                     save(des_dir, 'data_out');
                     fprintf('Data stored!\n\n');
                     clear data_out
                 catch
                     fprintf('<strong>interaction epoching did not work and was not saved!</strong>\n');
-                    fprintf(strcat('check interaction trials of participant ', fileName));                    
+                    fprintf(strcat('check interaction trials of participant ', fileName));
                     problem = {'error in interaction epoching'};
                     cfg.problems = [cfg.problems, problem]; 
                 end
@@ -94,5 +98,3 @@ function cfg = LT_segment(cfg)
     cfg.Steps = [cfg.Steps, {'segmentation'}];
     
 end
-  
-  

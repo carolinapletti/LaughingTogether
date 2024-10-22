@@ -1,5 +1,5 @@
 function cfg = LT_preprocess(cfg)
-    %this function calls another function containing the following preprocessing steps:
+    %this function calls another function (LT_prep) containing the following preprocessing steps:
     %1: convert the wavelength data to optical density
     %2: identifies motion artifacts and performs spline interpolation
     %3: applies wavelet-based artifact correction
@@ -7,6 +7,12 @@ function cfg = LT_preprocess(cfg)
     %5: manual rejection of bad channels through visual inspection
     %6: converts changes in optical density to changes in HbO, HbR and HbT
     %concentration
+	
+	%cfg: structure containing all necessary info on where to find the data and where to save them
+    
+    %Output: updated cfg containing all necessary info on where to find preprocessed data
+    
+    %author: Carolina Pletti (carolina.pletti@gmail.com).
     
     cfg.desDir = strcat(cfg.srcDir, 'preprocessed\');
     error = 0;
@@ -21,7 +27,7 @@ function cfg = LT_preprocess(cfg)
     for i = 1:2
     
         % load segment data
-        fileName    = strcat(cfg.currentPair, '_sub', int2str(i));       
+        fileName    = strcat(cfg.currentPair, '_sub', int2str(i));
         file_path = strcat(cfg.srcDir, fileName, '.nirs');
         out_path = strcat(cfg.desDir, fileName, '.mat');
         
@@ -38,7 +44,7 @@ function cfg = LT_preprocess(cfg)
             if iscell(data_out.d)
                 for tn = 1:length(data_out.d)
                     try
-                        [hbo{tn}, hbr{tn}, badChannels{tn}, SCIList{tn}, fs]= LT_prep(data_out.t{tn}, data_out.d{tn}, data_out.SD);   
+                        [hbo{tn}, hbr{tn}, badChannels{tn}, SCIList{tn}, fs]= LT_prep(data_out.t{tn}, data_out.d{tn}, data_out.SD);
                         t{tn} = data_out.t{tn};
                         s{tn} = data_out.s{tn};
                     catch

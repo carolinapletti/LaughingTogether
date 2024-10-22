@@ -1,10 +1,33 @@
-function coherences = calcCoherence(hbo_1, hbo_2, badChannels_1, badChannels_2, t, fs)   
+function coherences = LT_calcCoherence(hbo_1, hbo_2, badChannels_1, badChannels_2, t, fs)
+
+    %this function calculates the wavelet transform coherence for every
+    %combination of channels between two participants for the study Laughing Together.
+    
+    %hbo_1, hbo_2: cells containing oxygenated hemoglobin time series for
+    %each participant
+    %badChannels_1, badChannels_2: lists of bad channels for each
+    %participant
+    %t: time vector
+    %fs: sampling frequency
+    
+    %Output: cell structure with coherences containing:
+    % 1 - one matrix per channel combination with one value per each time
+    % point and period, excluding periods not of interest (i.e. from 
+    %greater than 4 times the filter to smaller than trial duration/4)
+    % 2 - one vector per channel combination with one value per period
+    % (excluding periods not of interest), averaged across timepoints
+    % 3 - one value per channel combination representing average WTC across
+    % timepoints and periods of interest
+    
+    %author: Carolina Pletti (carolina.pletti@gmail.com). Based on a script
+    %by Trinh Nguyen.
+    
     % Calc the period of interest
     error = 0;
     max = round(length(t) / fs/4); %trial duration/4
     ts = 1/fs;
     poi=[8 max]; %limits period of interest from greater than 4 times the filter to smaller than trial duration/4
-    poi_index = zeros(2,1); %in which columns does the perios of interest starts/ends?    
+    poi_index = zeros(2,1); %in which columns does the perios of interest starts/ends?
     %find the first two channels that are not bad for each participant
     
     for i = 1:4
@@ -34,8 +57,6 @@ function coherences = calcCoherence(hbo_1, hbo_2, badChannels_1, badChannels_2, 
         fprintf(msgText);
     end 
 
-
-    
     if error ~=1
         
         % -------------------------------------------------------------------------
@@ -90,7 +111,7 @@ function coherences = calcCoherence(hbo_1, hbo_2, badChannels_1, badChannels_2, 
                 sigPart1 = hbo_1(:,Ch_Sub1);
                 sigPart2 = hbo_2(:,Ch_Sub2);
                 try
-                    [Rsq{i}, wcs, period2, coi] =wcoherence(sigPart1,sigPart2,seconds(ts));                 % r square - measure for coherence
+                    [Rsq{i}, wcs, period2, coi] =wcoherence(sigPart1,sigPart2,seconds(ts)); % r square - measure for coherence
                     poi_index(1) = find(period > seconds(poi(1)), 1, 'first'); %finds the first column in period which is greater than the maximum period of interest
                     poi_index(2) = find(period < seconds(poi(2)), 1, 'last'); %finds the last column in period which is lower than the minimum period of interest
                 catch exception
@@ -101,7 +122,7 @@ function coherences = calcCoherence(hbo_1, hbo_2, badChannels_1, badChannels_2, 
                 for j=1:1:length(coi)
                     Rsq{i}(period >= coi(j), j) = NaN;
                 end
-   
+				
                 coherences{i}(:,4:length(coherences{i})) = Rsq{i}(poi_index(1):poi_index(2), :);
                 
             end
