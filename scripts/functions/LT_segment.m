@@ -5,7 +5,7 @@ function cfg = LT_segment(cfg)
     %laughter or interaction
     
     
-    cfg.desDir = strcat(cfg.srcDir, cfg.currentGroup, '\', cfg.currentSegment, '\');
+    cfg.desDir = strcat(cfg.srcDir, cfg.currentSegment, '\');
     
     % Check if all folders exist and create them
     if ~exist(cfg.desDir, 'dir')
@@ -17,15 +17,8 @@ function cfg = LT_segment(cfg)
         fileName = strcat(cfg.currentPair, '_sub', int2str(i));
         fprintf('Load raw nirs data of subject...\n');
         fprintf(fileName);
-        file_path = strcat(cfg.srcDir, cfg.currentGroup, '\', fileName,'.nirs');
+        file_path = strcat(cfg.srcDir, fileName, '.nirs');
         
-        try
-            data_in = load(file_path, '-mat');
-        catch
-            problem = {'file to segment can''t be opened'};
-            cfg.problems = [cfg.problems, problem]; 
-            continue
-        end
 
         %triggers for participants after pilot phase:
         % 1 - madlips start

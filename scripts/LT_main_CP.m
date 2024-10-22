@@ -117,15 +117,15 @@ end
 for g = cfg.groups
     cfg.currentGroup = g{:};
     cfg.rawGrDir = strcat(cfg.rawDir,cfg.currentGroup,'\');
-    cfg.srcDir = strcat(cfg.desDir, cfg.currentGroup, '\';
+    cfg.srcDir = strcat(cfg.desDir, cfg.currentGroup, '\');
 
     %identify all file in the group subdirectory
-    sourceList    = dir([cfg.srcDir, '*_*']);
+    sourceList    = dir([cfg.rawGrDir, '*_*']);
     sourceList    = struct2cell(sourceList);
     sourceList    = sourceList(1,:);
     numOfSources  = length(sourceList);
     
-    for i = 1:numOfSources
+    for i = 2:numOfSources
         %retrieve unmodified cfg info
         cfg_part = cfg;
         cfg_part.currentPair = sourceList{i};

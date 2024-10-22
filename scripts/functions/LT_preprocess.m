@@ -8,7 +8,8 @@ function cfg = LT_preprocess(cfg)
     %6: converts changes in optical density to changes in HbO, HbR and HbT
     %concentration
     
-    cfg.desDir = strcat(cfg.srcDir, ['preprocessed\']);
+    cfg.desDir = strcat(cfg.srcDir, 'preprocessed\');
+    error = 0;
         
     if ~exist(cfg.desDir, 'dir')
         mkdir(cfg.desDir);

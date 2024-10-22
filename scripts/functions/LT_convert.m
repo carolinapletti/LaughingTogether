@@ -35,7 +35,6 @@ function cfg = LT_convert(cfg)
             end    
         end
     end
-    cfg.srcDir = cfg.desDir;
     cfg.Steps = 'conversion';
 end  
 
