@@ -58,6 +58,8 @@ function cfg = LT_WTC(cfg)
             %check if that's the case
             if data_sub2.t{m} ~= t
                 fprintf('the time vectors of the two participants don''t correspond!')
+                problem = {'time vectors don''t correspond'};
+                cfg.problems = [cfg.problems, problem];
                 return;
             end
             if cfg.ROI == 1
@@ -74,6 +76,8 @@ function cfg = LT_WTC(cfg)
                 fprintf('couldnt calculate coherence for this part!\n');
                 msgText = getReport(exception);
                 fprintf(msgText);
+                problem = {'couldn''t calculate coherence'};
+                cfg.problems = [cfg.problems, problem];
                 return;
             end
             
@@ -106,6 +110,8 @@ function cfg = LT_WTC(cfg)
             clear coherences
         catch
             fprintf('Couldnt save data '); 
+            problem = {'couldn''t save coherence data'};
+            cfg.problems = [cfg.problems, problem];
         end
     end
     

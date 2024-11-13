@@ -46,7 +46,7 @@ function coherences = LT_calcCoherence(hbo_1, hbo_2, badChannels_1, badChannels_
     end
 
     try    
-        [wcoh,wcs,period] = wcoherence(sigPart1,sigPart2,seconds(ts)); %already calculates wtc and extracts period (that is, all "frequences" that are calculated)
+        [~,~,period] = wcoherence(sigPart1,sigPart2,seconds(ts)); %already calculates wtc and extracts period (that is, all "frequences" that are calculated)
         poi_index(1) = find(period > seconds(poi(1)), 1, 'first'); %finds the first column in period which is greater than the maximum period of interest
         poi_index(2) = find(period < seconds(poi(2)), 1, 'last'); %finds the last column in period which is lower than the minimum period of interest
     catch exception
@@ -111,7 +111,7 @@ function coherences = LT_calcCoherence(hbo_1, hbo_2, badChannels_1, badChannels_
                 sigPart1 = hbo_1(:,Ch_Sub1);
                 sigPart2 = hbo_2(:,Ch_Sub2);
                 try
-                    [Rsq{i}, wcs, period2, coi] =wcoherence(sigPart1,sigPart2,seconds(ts)); % r square - measure for coherence
+                    [Rsq{i}, ~, ~, coi] =wcoherence(sigPart1,sigPart2,seconds(ts)); % r square - measure for coherence
                     poi_index(1) = find(period > seconds(poi(1)), 1, 'first'); %finds the first column in period which is greater than the maximum period of interest
                     poi_index(2) = find(period < seconds(poi(2)), 1, 'last'); %finds the last column in period which is lower than the minimum period of interest
                 catch exception

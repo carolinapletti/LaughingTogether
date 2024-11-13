@@ -30,10 +30,8 @@ function data_out = LT_epoch_laughter(data_in)
         for m = 1:length(evtLaughter)
             if evtLaughterEnd(m)-evtLaughter(m) < 2329 %5 min with 7.8 sampling rate = 2340 points. 2330 to be on the safe side
                 fprintf('Too short trial!\n');
-                weirdtrials=1;
             elseif evtLaughterEnd(m)-evtLaughter(m) > 2390 %left "spielraum" in case delays in triggers
                 fprintf('Too long trial!\n');
-                weirdtrials=1;
             else
                 tn = tn + 1;
                 data_out.d{tn} = data_in.d(evtLaughter(m):evtLaughterEnd(m),:);

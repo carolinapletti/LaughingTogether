@@ -48,7 +48,7 @@ function [hbo, hbr, badChannels, SCIList, fs]= LT_prep(t, d, SD)
     tMask = 1;
     stdevThreshold = 5;
     ampThreshold = 0.4;
-    [tIncAuto,tIncCh] = hmrMotionArtifactByChannel(dod, fs, SD,...
+    [~,tIncCh] = hmrMotionArtifactByChannel(dod, fs, SD,...
                                     tInc, tMotion,...
                                     tMask, stdevThreshold,...
                                     ampThreshold);
@@ -109,18 +109,17 @@ function [hbo, hbr, badChannels, SCIList, fs]= LT_prep(t, d, SD)
 
     figure(4)
     for i = 1:16
+        %first wavelength
         x1 = d(:,i);
         y1 = bandpass(x1,[1/2 1+1/2],fs);
+        %second wavelength
         x2 = d(:,i+16);
         y2 = bandpass(x2,[0.5 1.5], fs);
-        %cut the first and last 200 time points to leave out artifacts. Then normalize. Cut
-        %also in raw signal for plotting purposes.
+        %cut the first and last 200 time points to leave out artifacts. Then normalize.
         y1 = y1(200:length(y1)-200);
         normy1 = y1/max(y1);
         y2 = y2(200:length(y2)-200);
         normy2 = y2/max(y2);
-        x1 = x1(200:length(x1)-200);
-        x2 = x2(200:length(x2)-200);
         %calculate cross-correlation at 0 lag
         r = xcorr(normy1,normy2,0,'coeff');
         SCIList.Channel(i) = i;

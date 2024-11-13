@@ -64,7 +64,6 @@ function data_out = LT_epoch_interaction(data_in, segment)
             data_out.SD = data_in.SD;
         else
             fprintf('Interaction duration is different than expected!\n');
-            weirdtrials = 1;
         end
     end
 end
