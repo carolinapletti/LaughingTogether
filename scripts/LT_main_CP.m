@@ -4,12 +4,13 @@
 % preprocesses the data, and calculates synchrony between pairs of participants
 % using wavelet transform coherence
 
-%for this to work, Homer2 should be added to the
-%Matlab path. See and modify lines below as necessary.
+%the function "LT_config_paths" needs to be in the Matlab current folder for this script to run! 
 
 %author: Carolina Pletti (carolina.pletti@gmail.com)
 
 clear all
+
+%---------------------------------------------------------
 
 % create empty structure that will contain all necessary parameters for
 % preprocessing
@@ -19,46 +20,39 @@ cfg.overwrite = 0; %set to 1 if you want to overwrite all data (converted data w
 cfg.groups = {'IC','IL','NIC','NIL'}; %names of the groups to be analyzed. Should correspond to subfolder names inside the raw data folder below
 cfg.segments = {'laughter', 'interaction'}; %segments of the experiment to be analyzed. Options: laughter, interaction
 
+
 % --------------------------------------------------------------------
+%set all paths for loading and saving data, add folder with functions and Homer2 to the path. Change paths in the config_paths
+%function and following part of the script based on necessity 
 
-%set all paths. Change paths in the following part of the script based on necessity
+sel = false;
 
-uni = 0;
+while sel == false
+    fprintf('\nPlease select one option:\n');
+    fprintf('[1] - Carolina''s workspace at the uni\n');
+    fprintf('[2] - Carolina''s workspace at home\n');
+    fprintf('[3] - None of the above\n');
 
-if uni == 1
-    
-    %project folder is here:
-    project_folder = 'X:\hoehl\projects\LT\LT_adults\';
-    
-    %data and scripts are here:
-    data_prep_folder = [project_folder 'Carolina_analyses\fNIRS\data_prep\'];
-    
-    %toolboxes are here:
-    toolboxes_folder = 'Z:\Documents\';
-    
-else
-    %project folder is here:
-    project_folder = '\\share.univie.ac.at\A474\hoehl\projects\LT\LT_adults\';
+    x = input('Option: ');
 
-    %data and scripts are here:
-    data_prep_folder = [project_folder 'Carolina_analyses\fNIRS\data_prep\'];
-    
-    %toolboxes are here:
-    toolboxes_folder = 'Z:\Documents\';
+    switch x
+        case 1
+            sel = true;
+            cfg = LT_config_paths(cfg, 1);
+        case 2
+            sel = true;
+            config_paths(0)
+        case 3
+            sel = true;
+            fprintf('please change this script and the config_path function so that the paths match with where you store data, toolboxes and scripts!');
+        return;
+        otherwise
+            cprintf([1,0.5,0], 'Wrong input!\n');
+        return
+    end
 end
 
-cfg.rawDir = [project_folder 'NIRX\Data\']; % raw data folder
-cfg.desDir = [data_prep_folder 'data\']; % destination folder
-cfg.SDFile = [project_folder 'NIRX\LT.SD']; % SD file
-addpath([data_prep_folder 'scripts\functions']); %add path with functions
 
-%add Homer2 to the path using its own function
-cd ([toolboxes_folder 'homer2'])
-setpaths
-cd([data_prep_folder 'scripts\'])
-
-
-%---------------------------------------------------------
 
 %decide what you want the analysis to do
 sel = false;
@@ -127,7 +121,7 @@ for g = cfg.groups
     sourceList    = sourceList(1,:);
     numOfSources  = length(sourceList);
     
-    for i = 2:numOfSources
+    for i = 1:numOfSources
         %retrieve unmodified cfg info
         cfg_part = cfg;
         cfg_part.currentPair = sourceList{i};
