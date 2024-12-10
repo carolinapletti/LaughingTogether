@@ -15,15 +15,8 @@ function data_sub2 = LT_RPA_prep(cfg)
     fprintf('Load preprocessed data...\n');
         
     %randomly determine Subject 2
-    working = 0;
-    while working == 0
-        r=randi(length(cfg.sources));
-        randPart = strsplit(cfg.sources{r}, '_');
-        file_path_sub2 = strcat(cfg.dataDir, randPart{1},'\', cfg.segment, '\preprocessed\', cfg.sources{r}, '_sub2.mat');
-        try
-            data_sub2=load(file_path_sub2);
-            working = 1;
-        catch
-            working = 0;
-        end
-    end        
+
+    r=randi(length(cfg.sources));
+    randPart = strsplit(cfg.sources{r}, '_');
+    file_path_sub2 = strcat(cfg.dataDir, randPart{1},'\', cfg.segment, '\preprocessed\', cfg.sources{r}, '_sub2.mat');
+    data_sub2=load(file_path_sub2);

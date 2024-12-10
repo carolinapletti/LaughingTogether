@@ -108,28 +108,23 @@ for i = 1:numOfSources
     %retrieve unmodified cfg info
     cfg_part = cfg;
     cfg_part.currentPair = cfg_part.sources{i};
-    cfg_part.problems = {};
     temp = strsplit(cfg_part.currentPair, '_');
     cfg_part.currentGroup = temp{1};
     cfg_part.srcDir = strcat(cfg_part.dataDir, cfg_part.currentGroup, '\', cfg_part.segment, '\preprocessed\');
         
     %random permutation wavelet transform coherence
-    cfg_part = LT_RPA(cfg_part);
-            
-    %cfg_part.srcDir = cfg.srcDir;
+    try
+        cfg_part = LT_RPA(cfg_part);
+    catch
+        fprintf(strcat('couldn''t calculate random pairs for participant ', cfg_part.currentPair))
+        continue
+    end
+    
+    %average all RPA files for this participant
+    try
+        cfg_part = LT_RPA_avg(cfg_part);
+    catch
+        fprintf(strcat('couldn''t calculate averages for participant ', cfg_part.currentPair))
+        continue
+    end
 end 
-        
-%         %save participant's cfg file, which contains a log of all the steps
-%         %that were ran
-%         try
-%             out_path = strcat(cfg.srcDir, cfg_part.currentPair, '.mat');
-%             fprintf(strcat('The cfg file of pair ', string(cfg_part.currentPair),' will be saved in/n'));
-%             fprintf('%s ...\n', out_path);
-%             save(out_path, 'cfg_part');
-%             fprintf('Data stored!\n\n');
-%         catch
-%             fprintf('Couldnt save data ');
-%         end
-%         
-%     end
-% end
