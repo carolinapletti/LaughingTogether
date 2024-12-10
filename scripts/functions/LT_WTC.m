@@ -92,12 +92,13 @@ function cfg = LT_WTC(cfg)
                 coherences_avgTime{m}{i} = [headers, avgTime];
                 coherences_avgAll{m}{i} = [headers(1,2:3),avgAll];
             end
-    
+                time{m} = t;
         end
         
         coherences.all = coherences_all;
         coherences.avgTime = coherences_avgTime;
         coherences.avgAll = coherences_avgAll;
+        coherences.time = time;
         
         %save data
         try

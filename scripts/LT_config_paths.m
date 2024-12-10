@@ -43,10 +43,13 @@ function cfg = LT_config_paths(cfg, uni)
     
     
     addpath([data_prep_folder 'scripts\functions']); %add path with functions
-
-    %add Homer2 to the path using its own function
-    cd ([toolbox_folder 'homer2'])
-    setpaths
-    cd([data_prep_folder 'scripts\'])
+    
+    % if we are calling this function from "LT_main", 
+    % add Homer2 to the path using its own function
+    if ~isfield(cfg, 'permnum') %the field "permnum" shouldn't exist if we are calling this from "LT_main"
+        cd ([toolbox_folder 'homer2'])
+        setpaths
+        cd([data_prep_folder 'scripts\'])
+    end
 
 end

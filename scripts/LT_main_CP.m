@@ -41,7 +41,7 @@ while sel == false
             cfg = LT_config_paths(cfg, 1);
         case 2
             sel = true;
-            config_paths(0)
+            cfg = LT_config_paths(cfg, 0)
         case 3
             sel = true;
             fprintf('please change this script and the config_path function so that the paths match with where you store data, toolboxes and scripts!');
