@@ -24,14 +24,14 @@ function cfg = LT_config_paths(cfg, uni)
         project_folder = 'X:\hoehl\projects\LT\LT_adults\';
 
         %Homer2 is here:
-        toolbox_folder = 'Z:\Documents\';
+        toolbox_folder = 'Z:\Documents\matlab_toolboxes\';
 
     else
         %project folder is here:
         project_folder = '\\share.univie.ac.at\A474\hoehl\projects\LT\LT_adults\';
 
         %Homer2 is here:
-        toolbox_folder = '\\fs.univie.ac.at\plettic85\Documents\';
+        toolbox_folder = '\\fs.univie.ac.at\plettic85\Documents\matlab_toolboxes\';
     end
 
     %data and scripts are here:
