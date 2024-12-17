@@ -15,7 +15,6 @@ function cfg = LT_RPA(cfg)
     %Output: updated cfg containing all necessary info on where to find wavelet coherence transform data
     
     %author: Carolina Pletti (carolina.pletti@gmail.com). Based on a script by Trinh Nguyen
-
     
     if cfg.ROI == 1
         cfg.desDir = strcat(cfg.srcDir, 'Coherence_ROIs_RPA\', cfg.currentPair, '\');
@@ -35,97 +34,47 @@ function cfg = LT_RPA(cfg)
         return
     end
     
-    
+    errors = 0; %so that the script knows how many times coherence wasn't calculated for one participant. If this is more than 50 times, likely coherence can't be calculated at all for this participant and the script will exit the loop
     for i = 1:cfg.permnum
         out_path = strcat(cfg.desDir, cfg.currentPair, '_', int2str(i), '.mat');
         if ~exist(out_path, 'file')
-            done = 0; %so that the script picks another random participant in case one of the steps does not work for one random pair. This way, we will have exactly 100 pairs for each participant
-            
-            while done == 0
-                try
-                    data_sub2 = LT_RPA_prep(cfg);
-                catch
-                    continue
-                end
-
-                %extract number of trials, numer of channels, and prepare
-                %coherence cell
-                numOfTrials = length(data_sub1.hbo);
-                %space to save coherence for each combination of time and
-                %period(frequency)
-                coherences_all{numOfTrials}  = [];
-                coherences_avgTime{numOfTrials} = [];
-                coherences_avgAll{numOfTrials} = [];
-
-                for m = 1:numOfTrials
-                    %extract data to calculate ROIs
-                    hbo_1 = data_sub1.hbo{m};
-                    badChannels_1 = data_sub1.badChannels{m};
-                    t = data_sub1.t{m};
-                    fs = data_sub1.fs;
-            
-                    hbo_2 = data_sub2.hbo{m};
-                    badChannels_2 = data_sub2.badChannels{m};
-                    %the files should be equal length for both participants.
-                    %check if that's the case and eventually adjust by taking
-                    %the shortest file
-                    if length(data_sub2.t{m}) ~= length(t)
-                        shortest_duration = min(length(data_sub2.t{m}), length(t));
-                        t = t(1:shortest_duration);
-                        hbo_1 = hbo_1(1:shortest_duration, :);
-                        hbo_2 = hbo_2(1:shortest_duration, :);
-                    end
-                
-                
-                    if cfg.ROI == 1
-                        %average all channels by ROI
-                        [hbo_1, badChannels_1] = LT_calcROI(hbo_1, badChannels_1);
-                        [hbo_2, badChannels_2] = LT_calcROI(hbo_2, badChannels_2);
-                    end
-
-                    %calculate coherences
-
+            if errors > 50
+                fprintf('random pairs can''t be calculated\n');
+                break
+            else
+                done = 0; %so that the script picks another random participant in case one of the steps does not work for one random pair. This way, we will have exactly 100 pairs for each participant            
+                while done == 0
                     try
-                        coherences_all{m} = LT_calcCoherence(hbo_1, hbo_2, badChannels_1, badChannels_2, t, fs);
-                    catch exception
-                        fprintf('couldnt calculate coherence for this part!\n');
-                        msgText = getReport(exception);
-                        fprintf(msgText);
+                        %load file of randomly selected participant 2,
+                        %prepare empty cells to save coherences, check that
+                        %time vectors of 2 participants correspond, calculate
+                        %coherences and return raw coherences and coherences
+                        %averages
+                        coherences = LT_RPA_prep(cfg, data_sub1);
+                    catch
+                        errors = errors + 1;
+                        if errors > 10
+                            break
+                        else
+                            continue
+                        end
+                    end
+
+
+
+                    %save data
+                    try
+                        fprintf('The wtc data of dyad %s will be saved in \n %s \n', cfg.currentPair, out_path)
+                        save(out_path, 'coherences');
+                        fprintf('Data stored!\n\n');
+                        clear coherences
+                    catch
+                        fprintf('Couldnt save data \n'); 
                         continue
                     end
-            
-                    % calculate the averages
-            
-                    for i = 1:length(coherences_all{m})
-                        %average through time, one value per period
-                        headers = coherences_all{m}{i}(:,1:3);
-                        avgTime = nanmean(coherences_all{m}{i}(:,4:end),2);
-                        %average through period as well. One value per channel.
-                        avgAll = nanmean(avgTime);
-                        coherences_avgTime{m}{i} = [headers, avgTime];
-                        coherences_avgAll{m}{i} = [headers(1,2:3),avgAll];
-                    end
+                    done = 1;
                 end
-        
-                coherences.all = coherences_all;
-                coherences.avgTime = coherences_avgTime;
-                coherences.avgAll = coherences_avgAll;
-        
-                %save data
-                try
-                    fprintf('The wtc data of dyad ')
-                    fprintf(cfg.currentPair)
-                    fprintf(' will be saved in\n'); 
-                    fprintf('%s ...\n', out_path);
-                    save(out_path, 'coherences');
-                    fprintf('Data stored!\n\n');
-                    clear coherences
-                catch
-                    fprintf('Couldnt save data '); 
-                    continue
-                end
-            done = 1;
-            end     
+            end
         end
     end
 end

@@ -111,12 +111,12 @@ for i = 1:numOfSources
     temp = strsplit(cfg_part.currentPair, '_');
     cfg_part.currentGroup = temp{1};
     cfg_part.srcDir = strcat(cfg_part.dataDir, cfg_part.currentGroup, '\', cfg_part.segment, '\preprocessed\');
-        
+    fprintf('processing participant %s \n', cfg_part.currentPair)
     %random permutation wavelet transform coherence
     try
         cfg_part = LT_RPA(cfg_part);
     catch
-        fprintf(strcat('couldn''t calculate random pairs for participant ', cfg_part.currentPair))
+        fprintf('couldn''t calculate random pairs for participant %s \n', cfg_part.currentPair)
         continue
     end
     
@@ -124,7 +124,7 @@ for i = 1:numOfSources
     try
         cfg_part = LT_RPA_avg(cfg_part);
     catch
-        fprintf(strcat('couldn''t calculate averages for participant ', cfg_part.currentPair))
+        fprintf('couldn''t calculate averages for participant %s \n', cfg_part.currentPair)
         continue
     end
 end 

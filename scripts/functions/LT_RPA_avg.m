@@ -18,11 +18,13 @@ function cfg = LT_RPA_avg(cfg)
         all_coherences = cell(1, 100); %create cell that contains data for each of the 100 pairings
 
         mat = dir([cfg.desDir, '*.mat']);
+        fprintf('loading...')
         for q = 1:length(mat)
             path = strcat(mat(q).folder, '\', mat(q).name);
             load(path);
             all_coherences{q} = coherences.all{1,:};
         end
+        fprintf('all loaded!')
 
         % Get the number of participants and sensors
         numSensors = numel(all_coherences{1});   % Should be 16
@@ -48,10 +50,7 @@ function cfg = LT_RPA_avg(cfg)
 
         %save data
         try
-            fprintf('The average random permutation coherence data of dyad ')
-            fprintf(cfg.currentPair)
-            fprintf(' will be saved in\n'); 
-            fprintf('%s ...\n', out_path);
+            fprintf('The average random permutation coherence data of dyad %s  will be saved in \n %s \n', cfg.currentPair, out_path)
             save(out_path, 'coherences');
             fprintf('Data stored!\n\n');
             clear coherences
@@ -60,7 +59,7 @@ function cfg = LT_RPA_avg(cfg)
             clear average_matrix
             clear average_coherences
         catch
-            fprintf('Couldnt save data '); 
+            fprintf('Couldnt save data \n'); 
             return
         end
     end
