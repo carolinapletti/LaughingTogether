@@ -174,7 +174,8 @@ function [hbo, hbr, badChannels, SCIList, fs]= LT_prep(t, d, SD)
     set(gcf,'units','normalized','outerposition',[0 0 1 1]) % maximize figure
 
 	%open box to manually mark bad channels
-    badChannels = channelCheckbox();
+    bad = find(SCIList.Bad ~= 0);
+    badChannels = LT_channelCheckbox(bad);
 
     %convert changes in OD (filtered signal) to changes in concentrations (HbO, HbR, and HbT)
     ppf = [6 6]; % partial pathlength factors for each wavelength.
