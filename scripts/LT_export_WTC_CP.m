@@ -1,5 +1,3 @@
-%%%% work in progress!!!%%%
-
 %%%%%%%%%%%%%%%%%% LT Project - Export script for group data %%%%%%%%%%%%%%%%%%%%%%%
 % this script opens and exports aggregated wavelet transform coherence data and saves
 % them in an appropriate format for future analyses (as a .csv file).
@@ -130,15 +128,16 @@ for s = cfg.segments
         
         if contains(cfg.avg, 'all')
             coherence_data = coherences.avgAll;
-            % Preallocate array for coherence values
-            coherence_values = zeros(1, num_labels^2);
+            num_rows = 1;
         elseif contains(cfg.avg, 'time')
             coherence_data = coherences.avgTime;
-            % Preallocate array for coherence values
-            coherence_values = zeros(length(coherence_data{1,1}{1,1}), num_labels^2);
-            periods = zeros(length(coherence_data{1,1}{1,1}),1);
+            num_rows = length(coherence_data{1,1}{1,1});
+            periods = zeros(num_rows,num_labels^2);
         end
-
+        
+        % Preallocate array for coherence values
+        coherence_values = zeros(num_rows, num_labels^2);
+        
         for int = 1:length(coherence_data)
             coherence_interval = coherence_data{1, int};
             variable_names = cell(1, num_labels^2);
@@ -160,12 +159,12 @@ for s = cfg.segments
 
 
             pairData = array2table(coherence_values, 'VariableNames', variable_names);
-            pairData.Interval = int;
-            pairData.Pair = string(group_pair{2});
-            pairData.Group = string(cfg_part.currentGroup);
-            pairData.Segment = string(cfg_part.currentSegment);
+            pairData.Interval = repelem(int, num_rows)';
+            pairData.Pair = repelem(string(group_pair{2}), num_rows)';
+            pairData.Group = repelem(string(cfg_part.currentGroup), num_rows)';
+            pairData.Segment = repelem(string(cfg_part.currentSegment), num_rows)';
             if contains(cfg.avg, 'time')
-                pairData.Period = periods;
+                pairData.Period = periods(:,1);
             end
 
             % Initialize or append to the data table
