@@ -78,9 +78,9 @@ function [coherences] = LT_RPA_prep(cfg, data_sub1)
         for i = 1:length(coherences_all{m})
             %average through time, one value per period
             headers = coherences_all{m}{i}(:,1:3);
-            avgTime = nanmean(coherences_all{m}{i}(:,4:end),2);
+            avgTime = mean(coherences_all{m}{i}(:,4:end),2, "omitnan");
             %average through period as well. One value per channel.
-            avgAll = nanmean(avgTime);
+            avgAll = mean(avgTime, "omitnan");
             coherences_avgTime{m}{i} = [headers, avgTime];
             coherences_avgAll{m}{i} = [headers(1,2:3),avgAll];
         end

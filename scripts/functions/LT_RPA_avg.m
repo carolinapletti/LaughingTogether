@@ -41,7 +41,7 @@ function cfg = LT_RPA_avg(cfg)
             all_matrices = cat(3, all_matrices{:});
 
             % Compute the average across the third dimension (participants)
-            average_matrix = nanmean(all_matrices, 3);
+            average_matrix = mean(all_matrices, 3, "omitnan");
 
             % Store the result in the output structure
             average_coherences{sensorIdx} = average_matrix;

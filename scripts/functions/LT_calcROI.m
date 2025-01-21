@@ -22,7 +22,7 @@ function [ROIsHbo, badROI] = LT_calcROI(hbo, badChannels)
     %becomes NaN
     if sum(ismember(9:12,badChannels)) < 3
         %only average the columns that are not NaN
-        IFGr = nanmean(hbo(:,9:12),2);
+        IFGr = mean(hbo(:,9:12),2, "omitnan");
     else
         IFGr = NaN(length(hbo),1);
         count = count +1;
@@ -31,7 +31,7 @@ function [ROIsHbo, badROI] = LT_calcROI(hbo, badChannels)
 
     if sum(ismember(5:8,badChannels)) < 3
         %change so that bad channels are not included!!
-        IFGl = nanmean(hbo(:,5:8),2);
+        IFGl = mean(hbo(:,5:8),2, "omitnan");
     else
         IFGl = NaN(length(hbo),1);
         count = count + 1;
@@ -40,7 +40,7 @@ function [ROIsHbo, badROI] = LT_calcROI(hbo, badChannels)
 
     if sum(ismember(13:16,badChannels)) < 3
         %change so that bad channels are not included!!
-        TPJr = nanmean(hbo(:,13:16),2);
+        TPJr = mean(hbo(:,13:16),2, "omitnan");
     else
         TPJr = NaN(length(hbo),1);
         count = count + 1;
@@ -49,7 +49,7 @@ function [ROIsHbo, badROI] = LT_calcROI(hbo, badChannels)
 
     if sum(ismember(1:4,badChannels)) < 3
         %change so that bad channels are not included!!
-        TPJl = nanmean(hbo(:,1:4),2);
+        TPJl = mean(hbo(:,1:4),2, "omitnan");
     else
         TPJl = NaN(length(hbo),1);
         count = count + 1;
