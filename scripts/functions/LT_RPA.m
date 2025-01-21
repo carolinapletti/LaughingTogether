@@ -53,7 +53,7 @@ function cfg = LT_RPA(cfg)
                         coherences = LT_RPA_prep(cfg, data_sub1);
                     catch
                         errors = errors + 1;
-                        if errors > 10
+                        if errors > 20
                             break
                         else
                             continue
