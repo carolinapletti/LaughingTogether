@@ -51,7 +51,7 @@ function cfg = LT_RPA_avg(cfg)
         %save data
         try
             fprintf('The average random permutation coherence data of dyad %s  will be saved in \n %s \n', cfg.currentPair, out_path)
-            save(out_path, 'coherences');
+            save(out_path, 'average_coherences');
             fprintf('Data stored!\n\n');
             clear coherences
             clear all_coherences
