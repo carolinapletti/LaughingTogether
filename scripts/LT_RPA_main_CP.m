@@ -5,6 +5,8 @@
 % between these random pairs so that for each pair we have a randomly
 % created control pair
 
+%added parts to also export RPA data
+
 %the function "LT_config_paths" needs to be in the Matlab current folder for this script to run! 
 
 %author: Carolina Pletti (carolina.pletti@gmail.com)
@@ -18,7 +20,7 @@ clear all
 cfg = [];
 cfg.overwrite = 0; %set to 1 if you want to overwrite all data (converted data will not be overwritten, all other steps will)
 cfg.groups = {'IC','IL','NIC','NIL'}; %names of the groups to be analyzed. Should correspond to subfolder names inside the raw data folder below
-cfg.segment = 'interaction_long'; %segment of the experiment to be analyzed. Only works for interaction_long
+cfg.segment = 'interaction'; %segment of the experiment to be analyzed
 cfg.permnum = 100; %how many random pairs should be calculated?
 
 

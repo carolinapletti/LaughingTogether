@@ -10,6 +10,8 @@
 %channel1 channel2 channel3 ... Period Subject Interval Group (one line per
 %each combination of participant and period)
 
+%added part to also export RPA data
+
 %the function "LT_config_paths" needs to be in the Matlab current folder for this script to run! 
 
 %author: Carolina Pletti (carolina.pletti@gmail.com)
@@ -22,7 +24,8 @@ clear all
 
 cfg = [];
 cfg.groups = {'IC','IL','NIC','NIL'}; %names of the groups to be analyzed. Should correspond to subfolder names inside the raw data folder below
-cfg.segments = {'laughter', 'interaction','interaction_long'}; %segment of the experiment to be analyzed. Options: laughter, interaction, interaction_long
+cfg.segments = {'interaction'}; %segment of the experiment to be analyzed. Options: laughter, interaction, interaction_long
+cfg.data = {'real', 'RPA'};
 
 
 %decide what you want the analysis to do
@@ -72,7 +75,7 @@ while sel == false
             cfg = LT_config_paths(cfg, 1);
         case 2
             sel = true;
-            cfg = LT_config_paths(cfg, 0)
+            cfg = LT_config_paths(cfg, 0);
         case 3
             sel = true;
             fprintf('please change this script and the config_path function so that the paths match with where you store data, toolboxes and scripts!');
@@ -105,73 +108,83 @@ cfg.dataDir = cfg.desDir;
 
 for s = cfg.segments
     cfg.currentSegment = s{:};
-    for id = 1:numOfSources
-        %retrieve unmodified cfg info
-        cfg_part = cfg;
-        cfg_part.currentPair = cfg_part.sources{id};
-        group_pair = strsplit(cfg_part.currentPair, '_');
-        cfg_part.currentGroup = group_pair{1};
-
-        cfg_part.srcDir = strcat(cfg_part.dataDir, cfg_part.currentGroup, '\', cfg_part.currentSegment, '\preprocessed\Coherence_ROIs');
-        fprintf('processing participant %s \n', cfg_part.currentPair)
-        filename = sprintf('%s\\%s.mat',cfg_part.srcDir, cfg_part.currentPair);
-        % load coherence data
-        try
-            load(filename);             
-        catch
-            fprintf('no coherence file avaliable for pair %s \n', cfg_part.currentPair)
-            continue
-        end
-        
-        labels = {'IFGr', 'IFGl', 'TPJr', 'TPJl'};
-        num_labels = length(labels);
-        
-        if contains(cfg.avg, 'all')
-            coherence_data = coherences.avgAll;
-            num_rows = 1;
-        elseif contains(cfg.avg, 'time')
-            coherence_data = coherences.avgTime;
-            num_rows = length(coherence_data{1,1}{1,1});
-            periods = zeros(num_rows,num_labels^2);
-        end
-        
-        % Preallocate array for coherence values
-        coherence_values = zeros(num_rows, num_labels^2);
-        
-        for int = 1:length(coherence_data)
-            coherence_interval = coherence_data{1, int};
-            variable_names = cell(1, num_labels^2);
-
-            % Extract coherence values and variable names using loops
-            idx = 1;
-            for i = 1:num_labels
-                for j = 1:num_labels
-                    if contains(cfg.avg, 'all')
-                        coherence_values(idx) = coherence_interval{1, idx}(3);
-                    elseif contains(cfg.avg, 'time')
-                        coherence_values(:,idx) = coherence_interval{1, idx}(:,4);
-                        periods(:,idx) = coherence_interval{1, idx}(:,1);
-                    end
-                    variable_names{idx} = strcat(labels{i}, '_', labels{j});
-                    idx = idx + 1;
-                end
-            end
-
-
-            pairData = array2table(coherence_values, 'VariableNames', variable_names);
-            pairData.Interval = repelem(int, num_rows)';
-            pairData.Pair = repelem(string(group_pair{2}), num_rows)';
-            pairData.Group = repelem(string(cfg_part.currentGroup), num_rows)';
-            pairData.Segment = repelem(string(cfg_part.currentSegment), num_rows)';
-            if contains(cfg.avg, 'time')
-                pairData.Period = periods(:,1);
-            end
-
-            % Initialize or append to the data table
-            if ~exist('data', 'var')
-                data = pairData;
+    for d = cfg.data
+        cfg.currentData = d{:};
+        for id = 1:numOfSources
+            %retrieve unmodified cfg info
+            cfg_part = cfg;
+            cfg_part.currentPair = cfg_part.sources{id};
+            group_pair = strsplit(cfg_part.currentPair, '_');
+            cfg_part.currentGroup = group_pair{1};
+            fprintf('processing participant %s \n', cfg_part.currentPair)
+            
+            if contains(cfg.currentData, 'RPA')
+                cfg_part.srcDir = strcat(cfg_part.dataDir, cfg_part.currentGroup, '\', cfg_part.currentSegment, '\preprocessed\Coherence_ROIs_RPA\',cfg_part.currentPair);
+                filename = sprintf('%s\\%s_avg.mat',cfg_part.srcDir, cfg_part.currentPair);
             else
-                data = [data; pairData];
+                cfg_part.srcDir = strcat(cfg_part.dataDir, cfg_part.currentGroup, '\', cfg_part.currentSegment, '\preprocessed\Coherence_ROIs');
+                filename = sprintf('%s\\%s.mat',cfg_part.srcDir, cfg_part.currentPair);
+            end
+
+            % load coherence data
+            try
+                load(filename);             
+            catch
+                fprintf('no coherence file avaliable for pair %s \n', cfg_part.currentPair)
+                continue
+            end
+
+            labels = {'IFGr', 'IFGl', 'TPJr', 'TPJl'};
+            num_labels = length(labels);
+
+            if contains(cfg.avg, 'all')
+                coherence_data = coherences.avgAll;
+                num_rows = 1;
+            elseif contains(cfg.avg, 'time')
+                coherence_data = coherences.avgTime;
+                num_rows = length(coherence_data{1,1}{1,1});
+                periods = zeros(num_rows,num_labels^2);
+            end
+
+            % Preallocate array for coherence values
+            coherence_values = zeros(num_rows, num_labels^2);
+
+            for int = 1:length(coherence_data)
+                coherence_interval = coherence_data{1, int};
+                variable_names = cell(1, num_labels^2);
+
+                % Extract coherence values and variable names using loops
+                idx = 1;
+                for i = 1:num_labels
+                    for j = 1:num_labels
+                        if contains(cfg.avg, 'all')
+                            coherence_values(idx) = coherence_interval{1, idx}(3);
+                        elseif contains(cfg.avg, 'time')
+                            coherence_values(:,idx) = coherence_interval{1, idx}(:,4);
+                            periods(:,idx) = coherence_interval{1, idx}(:,1);
+                        end
+                        variable_names{idx} = strcat(labels{i}, '_', labels{j});
+                        idx = idx + 1;
+                    end
+                end
+
+
+                pairData = array2table(coherence_values, 'VariableNames', variable_names);
+                pairData.Data = repelem(string(cfg_part.currentData), num_rows)';
+                pairData.Interval = repelem(int, num_rows)';
+                pairData.Pair = repelem(string(group_pair{2}), num_rows)';
+                pairData.Group = repelem(string(cfg_part.currentGroup), num_rows)';
+                pairData.Segment = repelem(string(cfg_part.currentSegment), num_rows)';
+                if contains(cfg.avg, 'time')
+                    pairData.Period = periods(:,1);
+                end
+
+                % Initialize or append to the data table
+                if ~exist('data', 'var')
+                    data = pairData;
+                else
+                    data = [data; pairData];
+                end
             end
         end
     end
@@ -179,4 +192,5 @@ for s = cfg.segments
     writetable(data,desFile,'Delimiter',',','QuoteStrings',true)
     clear data
 end
+
 
